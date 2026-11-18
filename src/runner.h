@@ -2,9 +2,16 @@
 
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <vector>
+#include <fstream>
+#include <curl/curl.h>
+#include <QtCore/QProcess>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QDebug>
+#include <QtCore/QCoreApplication>
+
 using namespace std;
 
-vector<string> executeCommand(string command);
-void outputData(vector<string> data);
-bool runServer();
+QProcess* executeCommand(const QString& program, const QStringList& arguments, const QString& workingDirectory);

@@ -1,15 +1,15 @@
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QLabel>
-#include "runner.h"
+#include "manager.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
-    QLabel wsp("Hello World!");
+    QCoreApplication app(argc, argv);
 
-    vector<string> data = executeCommand("ls -l");
-    outputData(data);
+    ServerProperties prop = {"Test", "26.3", "example", PAPER};
 
-    wsp.show();
+    Server server(prop);
+
+    server.createEnv();
+    server.start();
+
     return app.exec();
- }
+}
