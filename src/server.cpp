@@ -1,4 +1,4 @@
-#include "manager.h"
+#include "server.h"
 
 Server::Server(ServerProperties &p) {
     _properties = p;
@@ -37,6 +37,7 @@ bool Server::sendCommand(const QString& cmd) {
         return true;
     } else {
         cerr << "ERROR: There is no running server!\n";
+        return false;
     }
 }
 
@@ -81,15 +82,18 @@ bool Server::getServerFile() {
 bool Server::createNewInstance() {
     // Create Folder
     if (!fs::create_directory(_properties.folderPath)) {
-        cerr << "ERROR: Failed to crete a new directory!\n";
+        cout << "NOTICE: Failed to crete a new directory, it already exists!\n";
     }
 
     // Download required server file
-    if (getServerFile()) {
-        cout << "NOTICE: Successfully created a new instance!\n";
+    if (!fs::exists(_properties.folderPath + "/server.jar") && getServerFile()) {
+        cout << "NOTICE: Successfully downloaded the file!\n";
+        return true;
+    } else if (fs::exists(_properties.folderPath + "/server.jar")){
+        cout << "NOTICE: A server file already exists!\n";
         return true;
     } else {
-        cerr << "ERROR: Failed to create a new instance\n";
+        cerr << "ERROR: Couldn't download/load a server file!\n";
         return false;
     }
 
