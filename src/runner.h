@@ -6,12 +6,28 @@
 #include <vector>
 #include <fstream>
 #include <curl/curl.h>
-#include <QtCore/QProcess>
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QDebug>
-#include <QtCore/QCoreApplication>
-
+#include <unistd.h>
+#include <nlohmann/json.hpp>
+#include <boost/process/v1.hpp>
+#include <boost/process/v1/io.hpp>
+#include <boost/process/v1/pipe.hpp>
+#include <thread>
+namespace bp = boost::process::v1;
 using namespace std;
 
-QProcess* executeCommand(const QString& program, const QStringList& arguments, const QString& workingDirectory);
+
+struct Process {
+    string command;
+    vector<string> data, arguments;
+    string workingDirectory;
+    bp::ipstream is, err;
+    bp::opstream os;
+    bp::child proc;
+};
+
+void executeProgram(Process& program);
+bool getOutput(Process& program);
+bool getError(Process& program);
+bool getSyncOutput(Process& program);
+bool giveInput(Process& program, const string& command);
+bool isRunning(Process& program);
