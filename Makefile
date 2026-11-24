@@ -1,20 +1,10 @@
 CXX = g++
 
-CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude
+CXXFLAGS = -std=c++20 -Wall -Wextra -Iinclude
 
-LDFLAGS = -Llib
+LDFLAGS = -Llib -Wl,-rpath,'$$ORIGIN/lib' -Wl,--as-needed
 
-LIBS = $(shell pkg-config --libs libcurl) \
-       -lfltk \
-       -lXrender \
-       -lXcursor \
-       -lXfixes \
-       -lXft \
-       -lfontconfig \
-       -lXinerama \
-       -lX11 \
-       -pthread \
-       -lm
+LIBS = $(shell pkg-config --libs libcurl) -lAppCore -lUltralight -lUltralightCore -lWebCore -lpthread -ldl
 
 SRC = $(wildcard src/*.cpp)
 

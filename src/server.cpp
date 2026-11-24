@@ -2,7 +2,9 @@
 
 Server::Server(ServerProperties &p) {
     _properties = p;
-
+    proc.command = "/usr/bin/bash";
+    proc.arguments = {"run.sh"};
+    proc.workingDirectory = _properties.folderPath;
 }
 
 Server::Server(string sN) {
@@ -28,15 +30,15 @@ bool Server::start() {
     }
 
     // TODO: Add execution
-    
-
-    // TODO: Wait for server to start, else quit
+    executeProgram(proc);  
+    getSyncOutput(proc);
 
     return true;
 }
 
-bool Server::stop() {
+void Server::stop() {
     // TODO: Stop the server
+    killProgram(proc);
 }
 
 bool Server::create() {
@@ -53,6 +55,7 @@ bool Server::create() {
 
 bool Server::sendCommand(const string& cmd) {
     // TODO: Be able to send commands to server instance
+    return giveInput(proc, cmd);
 }
 
 size_t write_data(char* ptr, size_t size, size_t nmemb, void* userdata) {

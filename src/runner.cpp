@@ -8,6 +8,10 @@ void executeProgram(Process& prg) {
     prg.proc = initChild(prg.command, prg.is, prg.err, prg.os, prg.workingDirectory, prg.arguments);
 }
 
+void killProgram(Process &prg) {
+    prg.proc.terminate();
+}
+
 bool getOutput(Process& prg) {
     string isl = "";
     if (!isRunning(prg)) {

@@ -1,0 +1,99 @@
+```css
+/* General settings */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: monospace;
+    background-color: #111318;
+    color: #e6e6eb;
+}
+
+/* Main layout */
+.mainContainer {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sideMenu {
+    width: 230px;
+    min-width: 230px;
+    min-height: 100vh;
+
+    padding: 25px 15px;
+
+    background-color: #191c24;
+    border-right: 1px solid #2c3040;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sideMenu h1 {
+    color: #8b7cff;
+    font-size: 25px;
+    letter-spacing: 3px;
+    text-align: center;
+
+    margin: 10px 0 30px;
+}
+
+/* General button styling */
+button {
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+
+    border: 1px solid #353a4b;
+    border-radius: 8px;
+
+    padding: 12px;
+    color: #e6e6eb;
+    background-color: #252936;
+
+    transition: 0.2s ease;
+}
+
+button:hover {
+    background-color: #353b50;
+    border-color: #8b7cff;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Add Server button */
+#addServer {
+    background-color: #6254d9;
+    border-color: #7869f0;
+}
+
+#addServer:hover {
+    background-color: #7869f0;
+}
+
+/* Main content */
+.mainMenu {
+    flex: 1;
+    min-width: 0;
+    padding: 35px;
+}
+
+/* Server information container */
+.serverContainer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    padding: 25px;
+
+    background-color: #191c24;
+    border: 1px solid #2c3040;
+}

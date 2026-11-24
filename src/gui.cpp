@@ -1,13 +1,15 @@
 #include "gui.h"
 
-int renderGUI(int argc, char** argv) {
+void renderGUI() {
+    RefPtr<App> app = App::Create();
+    RefPtr<Window> window = Window::Create(
+        app->main_monitor(), 1280, 720, false,
+        WindowFlags::Titled | WindowFlags::Resizable
+    );
+    window->SetTitle("Qrystal");
 
-    Fl_Window window(400, 300, "My FLTK Application");
+    RefPtr<Panel> panel = window->AddPanel();
+    panel->view()->LoadURL("file:///index.html");
 
-    Fl_Box box(100, 120, 200, 60, "Hello, FLTK!");
-
-    window.end();
-    window.show();
-
-    return Fl::run();
+    app->Run();
 }

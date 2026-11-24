@@ -26,6 +26,7 @@ struct Process {
 };
 
 void executeProgram(Process& program);
+void killProgram(Process& program);
 bool getOutput(Process& program);
 bool getError(Process& program);
 bool getSyncOutput(Process& program);

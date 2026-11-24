@@ -33,7 +33,7 @@ public:
     // Import existing one
     Server(string serverName);
     bool start();
-    bool stop();
+    void stop();
     bool create();
     bool sendCommand(const string& command);
 
@@ -48,5 +48,6 @@ private:
     string getType();
     string _serverTypeStr;
     ServerProperties _properties;
+    Process proc;
     json data;
 };
