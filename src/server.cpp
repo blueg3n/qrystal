@@ -4,33 +4,30 @@ Server::Server(ServerProperties &p) {
     _properties = p;
     proc.command = "/usr/bin/bash";
     proc.arguments = {"run.sh"};
-    proc.workingDirectory = _properties.folderPath;
+    proc.workingDirectory = "servers/" + _properties.serverName;
 }
 
 Server::Server(string sN) {
     _properties.serverName = sN;
-    if (!loadInstance(_properties.folderPath)) {
-        cerr << "ERROR: Can't load the chosen instance!\n";
-    }
 
     getServerJSON();
 }
 
 bool Server::start() {
-    if (!fs::exists(_properties.folderPath + "/server.jar")) {
+    if (!fs::exists("servers/" + _properties.serverName + "/server.jar")) {
         cerr << "ERROR: server.jar doesn't exist!\n";
         return false;
     }
 
-    if (!fs::exists(_properties.folderPath + "/run.sh")) {
+    if (!fs::exists("servers/" + _properties.serverName + "/run.sh")) {
         if (!createScript()) {
             cerr << "ERROR: Couldn't create the bash script!\n";
             return false;
-        }  
+        }
     }
 
     // TODO: Add execution
-    executeProgram(proc);  
+    executeProgram(proc);
     getSyncOutput(proc);
 
     return true;
@@ -44,7 +41,7 @@ void Server::stop() {
 bool Server::create() {
     if (createNewInstance()) {
         // Set EULA to true
-        fstream file(_properties.folderPath + "/eula.txt", ios::out);
+        fstream file("servers/" + _properties.serverName + "/eula.txt", ios::out);
         file << "eula=true\n";
         return true;
     } else {
@@ -68,10 +65,10 @@ size_t write_data(char* ptr, size_t size, size_t nmemb, void* userdata) {
 bool Server::getServerFile(string ver, string type) {
     CURL *curl;
     fstream fp;
-    
+
     CURLcode res;
     string url = "https://mcutils.com/api/server-jars/" + type + "/" + ver + "/download";
-    string output = _properties.folderPath + "/server.jar";
+    string output = "servers/" + _properties.serverName + "/server.jar";
     curl = curl_easy_init();
 
     if (curl) {
@@ -84,7 +81,7 @@ bool Server::getServerFile(string ver, string type) {
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, &fp);
 
             res = curl_easy_perform(curl);
-        
+
             if (res != CURLE_OK) {
                 cerr << "Download failed: " << curl_easy_strerror(res) << '\n';
 
@@ -94,10 +91,10 @@ bool Server::getServerFile(string ver, string type) {
                 fs::remove(output);
                 return false;
             }
-        
+
             curl_easy_cleanup(curl);
             fp.close();
-        
+
         } else {
             cerr << "ERROR: Failed to save the server file!\n";
             return false;
@@ -107,7 +104,7 @@ bool Server::getServerFile(string ver, string type) {
         cerr << "ERROR: Failed to load CURL!\n";
         return false;
     }
-    
+
     return true;
 }
 
@@ -115,7 +112,7 @@ bool Server::createNewInstance() {
     // Create Folder
     std::error_code ec;
 
-    fs::create_directories(_properties.folderPath, ec);
+    fs::create_directories("servers/" + _properties.serverName, ec);
 
     if (ec) {
         cerr << "Directory creation failed: " << ec.message() << '\n';
@@ -123,9 +120,9 @@ bool Server::createNewInstance() {
     }
 
     // Download required server file
-    if (!fs::exists(_properties.folderPath + "/server.jar") && getServerFile(_properties.serverVersion, getType())) {
+    if (!fs::exists("servers/" + _properties.serverName + "/server.jar") && getServerFile(_properties.serverVersion, _properties.serverType)) {
         cout << "NOTICE: Successfully downloaded the file!\n";
-    } else if (fs::exists(_properties.folderPath + "/server.jar")){
+    } else if (fs::exists("servers/" + _properties.serverName + "/server.jar")){
         cout << "NOTICE: A server file already exists!\n";
     } else {
         cerr << "ERROR: Couldn't download/load a server file!\n";
@@ -133,76 +130,37 @@ bool Server::createNewInstance() {
     }
 
     addServerJSON();
-    fstream cfgFile(_properties.folderPath + "/qrystal.txt", ios::out);
-    cfgFile << "Name: " << _properties.serverName << "\n";
-    cfgFile << "Version: " << _properties.serverVersion << "\n";
-    cfgFile << "Type: " << _properties.serverType << "\n";
-    return true;
-}
-
-bool Server::loadInstance(string fP) {
-    fstream cfgFile(fP + "/qrystal.txt", ios::in);
-    string line;
-
-    if (!cfgFile.is_open()) {
-        return false;
-    }
-
-    while (getline(cfgFile, line)) {
-        if (line.rfind("Name: ", 0) == 0) {
-            _properties.serverName = line.substr(6);
-        }
-        else if (line.rfind("Version: ", 0) == 0) {
-            _properties.serverVersion = line.substr(9);
-        }
-        else if (line.rfind("Type: ", 0) == 0) {
-            _properties.serverType = static_cast<ServerType>(stoi(line.substr(6)));
-        }
-    }
-
-    _properties.folderPath = fP;
 
     return true;
 }
 
 bool Server::createScript() {
-    ofstream script(_properties.folderPath + "/run.sh");
+    ofstream script("servers/" + _properties.serverName + "/run.sh");
+    
     if (!script.is_open()) return false;
-    script << "java -Xmx" + to_string(_properties.maxAllocRAM) + "G" + " -Xms" + 
+    
+    script << "java -Xmx" + to_string(_properties.maxAllocRAM) + "G" + " -Xms" +
     to_string(_properties.minAllocRAM) + "G" + " -jar server.jar\n";
+    
     script.close();
+    
     return true;
 }
 
 void Server::addServerJSON() {
 
-    data["servers"][_properties.serverName] = _properties.folderPath;
+    data["servers"][_properties.serverName]["version"] = _properties.serverVersion;
+    data["servers"][_properties.serverName]["type"] = _properties.serverType;
     ofstream serverList("serverList.json");
 
-    serverList << data.dump(4);    
+    serverList << data.dump(4);
 }
 
 void Server::getServerJSON() {
     ifstream serverList("serverList.json");
     data = json::parse(serverList);
 
-    _properties.folderPath = data["servers"][_properties.serverName];
-    
+    _properties.serverVersion = data["servers"][_properties.serverName]["version"];
+    _properties.serverType = data["servers"][_properties.serverName]["type"];
 }
 
-string Server::getType() {
-    switch(_properties.serverType) {
-        case PAPER:
-            return "paper";
-        case CLASSIC:
-            return "vanilla";
-        case NEOFORGE:
-            return "neoforge";
-        case FORGE:
-            return "forge";
-        case FABRIC:
-            return "fabric";
-        default:
-            return "paper";
-    };
-}

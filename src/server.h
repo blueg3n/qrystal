@@ -2,23 +2,14 @@
 
 #include "runner.h"
 #include <filesystem>
-using namespace std;
 using namespace nlohmann;
 namespace fs = filesystem;
 
-enum ServerType {
-    CLASSIC,
-    FABRIC,
-    NEOFORGE,
-    FORGE,
-    PAPER
-};
 
 struct ServerProperties {
     string serverName;
     string serverVersion;
-    string folderPath;
-    ServerType serverType;
+    string serverType;
     int id;
     bool state;
     int minAllocRAM = 2;
@@ -40,12 +31,10 @@ public:
 private:
     bool getServerFile(string version, string type);
     bool createNewInstance();
-    bool loadInstance(string folderPath);
     bool createScript();
     void addServerJSON();
     void getServerJSON();
 
-    string getType();
     string _serverTypeStr;
     ServerProperties _properties;
     Process proc;

@@ -1,15 +1,39 @@
 #include "gui.h"
 
-void renderGUI() {
-    RefPtr<App> app = App::Create();
-    RefPtr<Window> window = Window::Create(
-        app->main_monitor(), 1280, 720, false,
-        WindowFlags::Titled | WindowFlags::Resizable
-    );
-    window->SetTitle("Qrystal");
+RefPtr<App> qrystal;
+RefPtr<Window> qWindow;
+RefPtr<Panel> qPanel;
+WindowListener qListener;
 
-    RefPtr<Panel> panel = window->AddPanel();
-    panel->view()->LoadURL("file:///index.html");
+js::API app("qrystal");
 
-    app->Run();
+void testing() {
+    cout << "REGISTERED\n";
+}
+
+void attach(View* view) {
+    app["testing"] = testing;
+
+    if (app.AttachTo(view)) {
+        view->LoadURL("file:///example.html");
+    }
+}
+
+void render() {
+    qrystal = App::Create();
+    qWindow = Window::Create(qrystal->main_monitor(), 1280.0, 720.0, false, WindowFlags::Titled | WindowFlags::Resizable);
+    qWindow->SetTitle("Qrystal");
+    qPanel = qWindow->AddPanel();
+    
+    qWindow->set_listener(&qListener);
+    
+    app.Bind("testing", testing);
+    attach(qPanel->view().get());    
+
+    qrystal->Run();
+}
+
+void kill() {
+    qWindow->Close();
+    qrystal->Quit();
 }

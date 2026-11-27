@@ -1,99 +1,246 @@
-```css
-/* General settings */
+/* GENERAL */
+
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    font-family: monospace;
-    background-color: #111318;
-    color: #e6e6eb;
+    background: #111216;
+    color: #e5e5e5;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    overflow: hidden;
 }
 
-/* Main layout */
-.mainContainer {
-    display: flex;
-    min-height: 100vh;
+button, input {
+    font-family: inherit;
+    outline: none;
 }
 
-/* Sidebar */
-.sideMenu {
-    width: 230px;
-    min-width: 230px;
-    min-height: 100vh;
+button {
+    cursor: pointer;
+    transition: 0.2s;
+}
 
+
+/* SIDEBAR */
+
+#sideMenu {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 210px;
+    height: 100%;
     padding: 25px 15px;
+    background: #191a20;
+    border-right: 1px solid #292a32;
+    z-index: 10;
+}
 
-    background-color: #191c24;
-    border-right: 1px solid #2c3040;
+#sideMenu button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #252630;
+    color: #ddd;
+    border: 1px solid #353640;
+    border-radius: 6px;
+    text-align: left;
+}
 
+#sideMenu button:hover {
+    background: #353443;
+    color: #a78bfa;
+    border-color: #a78bfa;
+}
+
+
+/* MAIN CONTENT */
+
+#mainMenu {
+    margin-left: 210px;
+    height: 100vh;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+
+/* GENERAL PANELS */
+
+#info, #properties, #console {
+    background: #191a20;
+    border: 1px solid #292a32;
+    border-radius: 9px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+
+/* SERVER INFORMATION */
+
+#info h2 {
+    font-size: 15px;
+    color: #a1a1aa;
+    margin-bottom: 15px;
+}
+
+#info h2:first-child {
+    color: #a78bfa;
+    font-size: 22px;
+}
+
+
+/* SERVER BUTTONS */
+
+#info button {
+    padding: 10px 18px;
+    margin: 10px 8px 0 0;
+    border-radius: 5px;
+    border: 1px solid #353640;
+    background: #252630;
+    color: #ddd;
+}
+
+#info button:hover {
+    background: #353443;
+    border-color: #a78bfa;
+}
+
+#start {
+    color: #86efac !important;
+}
+
+#stop {
+    color: #fca5a5 !important;
+}
+
+
+/* SERVER PROPERTIES */
+
+#properties h2 {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+input {
+    background: #111216;
+    border: 1px solid #353640;
+    border-radius: 5px;
+    padding: 9px;
+    color: #fff;
+    min-width: 0;
+}
+
+input:focus {
+    border-color: #a78bfa;
+}
+
+#properties input {
+    width: 180px;
+}
+
+
+/* CONSOLE */
+
+#console {
+    height: 400px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
 }
 
-.sideMenu h1 {
-    color: #8b7cff;
-    font-size: 25px;
-    letter-spacing: 3px;
-    text-align: center;
-
-    margin: 10px 0 30px;
-}
-
-/* General button styling */
-button {
-    font-family: inherit;
-    font-size: 14px;
-    cursor: pointer;
-
-    border: 1px solid #353a4b;
-    border-radius: 8px;
-
-    padding: 12px;
-    color: #e6e6eb;
-    background-color: #252936;
-
-    transition: 0.2s ease;
-}
-
-button:hover {
-    background-color: #353b50;
-    border-color: #8b7cff;
-    transform: translateY(-2px);
-}
-
-button:active {
-    transform: translateY(0);
-}
-
-/* Add Server button */
-#addServer {
-    background-color: #6254d9;
-    border-color: #7869f0;
-}
-
-#addServer:hover {
-    background-color: #7869f0;
-}
-
-/* Main content */
-.mainMenu {
+#consoleOutput {
     flex: 1;
-    min-width: 0;
-    padding: 35px;
+    min-height: 0;
+    overflow-y: auto;
+    background: #101115;
+    border: 1px solid #292a32;
+    border-radius: 5px;
+    padding: 12px;
+    color: #b4b4be;
+    font-family: monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
 
-/* Server information container */
-.serverContainer {
+#console h3 {
+    margin-top: 12px;
+    color: #a78bfa;
+    font-size: 14px;
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
+    gap: 10px;
+}
 
+#console input {
+    flex: 1;
+}
+
+
+/* CREATE SERVER */
+
+#create {
+    background: #191a20;
+    border: 1px solid #292a32;
+    border-radius: 9px;
     padding: 25px;
+    max-width: 600px;
+}
 
-    background-color: #191c24;
-    border: 1px solid #2c3040;
+#create h2 {
+    font-size: 15px;
+    margin-bottom: 20px;
+    color: #aaa;
+}
+
+#create h2:first-child {
+    color: #a78bfa;
+    font-size: 22px;
+    margin-bottom: 30px;
+}
+
+#create input {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#create button {
+    padding: 11px 18px;
+    margin-top: 10px;
+    background: #7c5cce;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+#create button:hover {
+    background: #9274e0;
+}
+
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: #111216;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #41414d;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #77738d;
 }

@@ -1,5 +1,8 @@
 {
     "servers": {
-        "Test1": "example"
+        "Test1": {
+            "type": "paper",
+            "version": "1.21.1"
+        }
     }
 }

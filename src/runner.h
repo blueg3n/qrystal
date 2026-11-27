@@ -12,6 +12,10 @@
 #include <boost/process/v1/io.hpp>
 #include <boost/process/v1/pipe.hpp>
 #include <thread>
+#include <Ultralight/Ultralight.h>
+#include <Ultralight/JS.h>
+#include <AppCore/App.h>
+#include <AppCore/Window.h>
 namespace bp = boost::process::v1;
 using namespace std;
 

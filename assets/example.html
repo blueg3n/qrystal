@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <template id="server">
+            <div id="info">
+                <h2 id="name">Server Name:</h2>
+                <h2 id="version">Server Version:</h2>
+                <h2 id="type">Server Type:</h2>
+                <h2>Status: </h2>
+                <button id="start">Start Server</button>
+                <button id="stop">Stop Server</button>
+            </div>
+            <div id="properties">
+                <h2>Difficulty: <input id="difficulty"></h2>
+                <h2>Gamemode: <input id="gamemode"></h2>
+                <h2>Max Players: <input id="maxPlayers"></h2> 
+            </div>
+            <div id="console">
+                <h4 id="consoleOutput"></h4>
+                <h3> > <input id="consoleInput"></h3>
+            </div>
+        </template>
+        <template id="create">
+            <h2>Create New Server: </h2>
+            <h2>Server Name: <input id="name"></h2>
+            <h2>Server Version: <input id="version"></h2>
+            <h2>Server Type: <input id="type"></h2>
+            <button id="createNew">Create the Server</button>
+        </template>
+        
+        <div id="sideMenu">
+            <button id="newServer">New Server</button>
+        </div>
+        
+        <div id="mainMenu"></div>
+
+    </body>
+    <script>
+        const serverInst = document.getElementById("server");
+        const createInst = document.getElementById("create");
+
+        const newServer = document.getElementById("newServer");
+        const mainMenu = document.getElementById("mainMenu");
+
+        function newServerMenu() {
+            mainMenu.replaceChildren();
+        
+            const _createInst = createInst.content.cloneNode(true);
+            mainMenu.appendChild(_createInst);
+        
+            const createNew = document.getElementById("createNew");
+        
+            createNew.addEventListener("click", createNewServer);
+        }
+
+        function createNewServer() {
+            const name = document.getElementById("name").value;
+            const version = document.getElementById("version").value;
+            const type = document.getElementById("type").value;
+        
+            if (name === "" || version === "" || type === "") {
+                alert("Please fill in all fields!");
+                return;
+            }
+        
+            // Communicate with C++
+            qrystal.createNewServer(name, version, type);
+        
+            // Display server template
+            mainMenu.replaceChildren();
+        
+            const _server = serverInst.content.cloneNode(true);
+            mainMenu.appendChild(_server);
+        
+            // Set server information
+            document.getElementById("name").textContent = "Server Name: " + name;
+            document.getElementById("version").textContent = "Server Version: " + version;
+            document.getElementById("type").textContent = "Server Type: " + type;
+        
+            // Connect server buttons
+            document.getElementById("start").addEventListener("click", startServer);
+            document.getElementById("stop").addEventListener("click", stopServer);
+        
+            // Connect console
+            document.getElementById("consoleInput").addEventListener("keydown", sendCommand);
+        }
+
+        function startServer() {
+            qrystal.startServer();
+        }
+
+        function stopServer() {
+            qrystal.stopServer();
+        }
+
+        function sendCommand(event) {
+            if (event.key === "Enter") {
+                const command = event.target.value;
+            
+                if (command !== "") {
+                    qrystal.sendCommand(command);
+                    event.target.value = "";
+                }
+            }
+        }
+
+        newServer.addEventListener("click", newServerMenu);    
+    </script>
+</html>
